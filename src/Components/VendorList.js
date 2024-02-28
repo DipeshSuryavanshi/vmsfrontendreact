@@ -3,7 +3,9 @@ import './VendorList.css';
 import { Delete, Edit } from '@mui/icons-material';
 import axios from 'axios';
 import moment from 'moment';
+
 import { Box, Modal } from '@mui/material';
+import Swal from 'sweetalert2';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -79,11 +81,28 @@ function VendorList() {
                     'Authorization': `Bearer ${token}` // Include the token in the Authorization header
                 }
             });
+    
+            // Show success message using SweetAlert if the deletion is successful
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Vendor deleted successfully!',
+            });
+    
+            // Fetch updated vendor data after deletion
             fetchVendorData();
         } catch (err) {
             console.log(err);
+    
+            // Show error message using SweetAlert if deletion fails
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to delete vendor. Please try again later.',
+            });
         }
     };
+    
     
 
     const handleEdit = async (id) => {
@@ -114,6 +133,12 @@ function VendorList() {
                         }
                     });
                     fetchVendorData();
+                    handleClose()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Vendor updated successfully!',
+                    });
                 } catch (err) {
                     console.log(err);
                 }
@@ -178,19 +203,20 @@ function VendorList() {
         <h2>Edit Vendor</h2>
         <hr></hr>
         <form>
-            <div className="form-group">
-                <label htmlFor="vendorName">Vendor Name</label>
+            <div className="form-group align-left">
+                <label htmlFor="vendorName"style={{ fontWeight: 'bold' }}>Vendor Name</label>
                 <input
                     type="text"
                     className="form-control"
                     id="vendorName"
                     value={selectedVendor.vendorName}
                     onChange={(e) => setSelectedVendor({ ...selectedVendor, vendorName: e.target.value })}
+                    required
                 />
             </div>
-            {/* Add other fields here with similar structure */}
-            <div className="form-group">
-                <label htmlFor="companyName">Company Name</label>
+
+            <div className="form-group align-left">
+                <label htmlFor="companyName"style={{ fontWeight: 'bold' }}>Company Name</label>
                 <input
                     type="text"
                     className="form-control"
@@ -199,8 +225,8 @@ function VendorList() {
                     onChange={(e) => setSelectedVendor({ ...selectedVendor, companyName: e.target.value })}
                 />
             </div>
-            <div className="form-group">
-                <label htmlFor="contactNo">Contact No</label>
+            <div className="form-group align-left">
+                <label htmlFor="contactNo"style={{ fontWeight: 'bold' }}>Contact No</label>
                 <input
                     type="text"
                     className="form-control"
@@ -209,7 +235,7 @@ function VendorList() {
                     onChange={(e) => setSelectedVendor({ ...selectedVendor, contactNo: e.target.value })}
                 />
             </div>
-            <div className="form-group">
+            <div className="form-group align-left"style={{ fontWeight: 'bold' }}>
                 <label htmlFor="address">Address</label>
                 <input
                     type="text"
@@ -219,7 +245,7 @@ function VendorList() {
                     onChange={(e) => setSelectedVendor({ ...selectedVendor, address: e.target.value })}
                 />
             </div>
-            <div className="form-group">
+            <div className="form-group align-left"style={{ fontWeight: 'bold' }}>
                 <label htmlFor="email">Email</label>
                 <input
                     type="email"

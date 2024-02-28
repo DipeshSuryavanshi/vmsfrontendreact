@@ -5,6 +5,7 @@ import Dashboard from './Pages/Dashboard';
 import VendorList from './Components/VendorList';
 import VendorRegistration from './Pages/VendorRegistration';
 import CandidateRegistration from './Pages/CandidateRegistration';
+import CandidateList from './Components/CandidateList';
 
 const Routes = () => {
   return (
@@ -17,8 +18,10 @@ const Routes = () => {
         <Route path="/dashboard" element={<Dashboard />}>
           {/* Nested routes under Dashboard */}
           <Route path="vendor-list" element={<VendorList />} />
-          <Route path="register-caditate" element={<CandidateRegistration />} />
+          <Route path="register-canditate" element={<CandidateRegistration />} />
           <Route path="register-vendor" element={<VendorRegistration />} />
+          <Route path="candidate-list" element={<CandidateList />} />
+          
         </Route>
          
          
