@@ -8,12 +8,25 @@ import axios from 'axios'; // Import axios for making HTTP requests
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     const handleLogin = async (event) => {
         event.preventDefault();
 
+        if (!email || !password) {
+            setEmailError(email ? '' : 'Please enter your email.');
+            setPasswordError(password ? '' : 'Please enter your password.');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            setEmailError('Please enter a valid email.');
+            return;
+        }
+
         try {
-            const response = await axios.post("http://localhost:8082/authenticate", {
+            const response = await axios.post("http://localhost:8081/authenticate", {
                 email: email,
                 password: password
             });
@@ -43,6 +56,12 @@ const AdminLogin = () => {
         }
     };
 
+    const isValidEmail = (email) => {
+        // Regular expression to check if the email format is valid
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     return (
         <main>
             <div className="container">
@@ -65,13 +84,13 @@ const AdminLogin = () => {
                                         <form onSubmit={handleLogin} className="row g-3 needs-validation" noValidate>
                                             <div className="col-12">
                                                 <label htmlFor="email" className="form-label">Email</label>
-                                                <input type="email" name="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                                <div className="invalid-feedback">Please enter a valid email.</div>
+                                                <input type="email" name="email" className={`form-control ${emailError ? 'is-invalid' : ''}`} id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                                <div className="invalid-feedback">{emailError}</div>
                                             </div>
                                             <div className="col-12">
                                                 <label htmlFor="password" className="form-label">Password</label>
-                                                <input type="password" name="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                                                <div className="invalid-feedback">Please enter your password.</div>
+                                                <input type="password" name="password" className={`form-control ${passwordError ? 'is-invalid' : ''}`} id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                                <div className="invalid-feedback">{passwordError}</div>
                                             </div>
                                             <div className="col-12">
                                                 <button className="btn btn-primary w-100" type="submit">Login</button>
