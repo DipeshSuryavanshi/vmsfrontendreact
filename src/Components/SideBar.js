@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import './SideBar.css'; // Import your CSS file
-
+import VendorRegistration from '../Pages/VendorRegistration';
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -35,8 +33,8 @@ const Sidebar = () => {
                 </li>
                 <List className="nav-item">
                     <ListItemButton onClick={handleClick}>
-                  
-                        <ListItem className='list-item-main' >Vendors</ListItem>
+
+                        <ListItem className='list-item-main'>Vendors</ListItem>
                         {open ? <ExpandLess className='expand-icon' /> : <ExpandMore className='expand-icon' />}
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
@@ -62,10 +60,10 @@ const Sidebar = () => {
                     <Collapse in={canditateOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding className='list-box'>
 
-                            <ListItem className='list-item' onClick={() => navigate("/dashboard/register-canditate")}>Register Candidates</ListItem>
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/register-candidate")}>Register Candidates</ListItem>
                             <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-list")}>Get All Candidates</ListItem>
 
-
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-info")}> Candidate Detail</ListItem>
                         </List>
                     </Collapse>
 

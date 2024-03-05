@@ -6,6 +6,13 @@ import VendorList from './Components/VendorList';
 import VendorRegistration from './Pages/VendorRegistration';
 import CandidateRegistration from './Pages/CandidateRegistration';
 import CandidateList from './Components/CandidateList';
+import CandidateInfo from './Pages/CandidateInfo';
+import Header from './Components/Header';
+
+function isLoggedIn() {
+  const token = localStorage.getItem('token');
+  return token !== null && token !== undefined;
+}
 
 const Routes = () => {
   return (
@@ -14,17 +21,24 @@ const Routes = () => {
         {/* Define a top-level route for AdminLogin */}
         <Route path="/" element={<AdminLogin />} />
 
-        {/* Define a top-level route for Dashboard */}
-        <Route path="/dashboard" element={<Dashboard />}>
-          {/* Nested routes under Dashboard */}
-          <Route path="vendor-list" element={<VendorList />} />
-          <Route path="register-canditate" element={<CandidateRegistration />} />
-          <Route path="register-vendor" element={<VendorRegistration />} />
-          <Route path="candidate-list" element={<CandidateList />} />
-          
-        </Route>
-         
-         
+        {/* Conditional rendering based on isLoggedIn */}
+        {isLoggedIn() ? (
+          <>
+            {/* Define a top-level route for Dashboard */}
+            <Route path="/dashboard" element={<Dashboard />}>
+              {/* Nested routes under Dashboard */}
+              <Route path="vendor-list" element={<VendorList />} />
+              <Route path="register-candidate" element={<CandidateRegistration />} />
+              <Route path="register-vendor" element={<VendorRegistration />} />
+              <Route path="candidate-list" element={<CandidateList />} />
+              <Route path="candidate-info" element={<CandidateInfo />} />
+            </Route>
+            
+          </>
+        ) : (
+          // If not logged in, redirect to the login page
+          <Route path="*" element={<Navigate to="/" />} />
+        )}
         
       </RouterRoutes>
     </Router>
@@ -32,27 +46,3 @@ const Routes = () => {
 };
 
 export default Routes;
-// import React from 'react'
-// import { BrowserRouter  ,Route,Routes as Routess } from 'react-router-dom'
-// import Dashboard from './Pages/Dashboard'
-// import VendorList from './Components/VendorList'
-// import VendorRegistration from './Pages/VendorRegistration'
-// import CandidateRegistration from './Pages/CandidateRegistration'
-
-// const Routes = () => {
-//   return (
-//     <div>
-//       <BrowserRouter>
-//       <Routess>
-//         <Route path='/' element={<Dashboard/>}/>
-//         <Route path='/canditate-list' element={<VendorList/>}/>
-//         <Route path='/register-canditate' element={<VendorRegistration/>}/>
-//         <Route path='/register-caditate' element={<CandidateRegistration/>}/>
-//     </Route>
-//       </Routess>
-//       </BrowserRouter>
-//     </div>
-//   )
-// }
-
-// export default Routes

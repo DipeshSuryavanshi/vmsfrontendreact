@@ -21,9 +21,12 @@ function CandidateRegistration() {
 
   useEffect(() => {
     flatpickr("#dateOfBirth", {
-      dateFormat: "Y-m-d"
+      dateFormat: "Y-m-d",
+      
     });
   }, []);
+
+ 
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -125,7 +128,7 @@ function CandidateRegistration() {
                       </div>
                       <div className="col-6">
                         <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                        <input type="date" name="dateOfBirth" className="form-control" id="dateOfBirth" required onChange={handleInputChange}/>
+                        <input type="date" name="dateOfBirth" className="form-control" id="dateOfBirth" required/>
                         <div className="invalid-feedback">Please choose date of birth!</div>
                       </div>
                       <div className="col-12 d-flex justify-content-center">

@@ -56,6 +56,8 @@ const AdminLogin = () => {
         }
     };
 
+    
+
     const isValidEmail = (email) => {
         // Regular expression to check if the email format is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

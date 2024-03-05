@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Delete, Edit } from '@mui/icons-material';
-import { Box, Modal, Stack } from '@mui/material';
 import Swal from 'sweetalert2';
 import Header from './Header';
+import { Box, Modal, Stack } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 
 const style = {
@@ -27,7 +27,7 @@ function CandidateList() {
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(2); // You can change this value as per your requirement
+    const [itemsPerPage, setItemsPerPage] = useState(2); 
 
     useEffect(() => {
         fetchCandidateData();
@@ -39,34 +39,36 @@ function CandidateList() {
     const fetchCandidateData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:8081/candidate/getAll', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const res = await axios.get('http://localhost:8081/candidate/getAll',
+            {headers:
+                {'Authorization': `Bearer ${token}`}
+        });
             setCandidates(res?.data || []);
         } catch (err) {
             console.log(err);
         }
     };
-
     const deleteCandidateData = async (id) => {
         try {
             const token = localStorage.getItem('token');
             const res = await axios.delete(`http://localhost:8081/candidate/delete/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
-
+    
             // Show success message using SweetAlert if the deletion is successful
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
                 text: 'Candidate deleted successfully!',
             });
-
+    
             // Fetch updated candidate data after deletion
             fetchCandidateData();
         } catch (err) {
             console.log(err);
-
+    
             // Show error message using SweetAlert if deletion fails
             Swal.fire({
                 icon: 'error',
@@ -75,12 +77,15 @@ function CandidateList() {
             });
         }
     };
+    
 
     const handleEdit = async (id) => {
         try {
             const token = localStorage.getItem('token');
             const res = await axios.get(`http://localhost:8081/candidate/getCandidate/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             setSelectedCandidate(res?.data || null);
             handleOpen();
@@ -94,9 +99,9 @@ function CandidateList() {
             if (selectedCandidate) {
                 const { id, ...data } = selectedCandidate;
                 const token = localStorage.getItem('token');
-                const res = await axios.put(`http://localhost:8081/candidate/updateCandidate/${id}`, data, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await axios.put(`http://localhost:8081/candidate/updateCandidate/${id}`, data,
+                {headers :{'Authorization' : `Bearer ${token}`}
+            });
                 fetchCandidateData();
                 handleClose();
                 Swal.fire({
@@ -109,7 +114,6 @@ function CandidateList() {
             console.log(err);
         }
     };
-
     // Change page
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -121,8 +125,6 @@ function CandidateList() {
     const currentCandidates = candidates.slice(indexOfFirstCandidate, indexOfLastCandidate);
 
     const pageCount = Math.ceil(candidates.length / itemsPerPage);
-
-    
 
     return (
         <main>
@@ -158,7 +160,6 @@ function CandidateList() {
                         ))}
                     </tbody>
                 </table>
-
                 <Stack spacing={2} direction="row" justifyContent="center" marginTop={2}>
                     <Pagination
                         count={pageCount}
@@ -181,7 +182,7 @@ function CandidateList() {
                                 <h2>Edit Candidate</h2>
                                 <hr></hr>
                                 <form>
-                                <div className="form-group align-left">
+                <div className="form-group align-left">
                     <label htmlFor="candidateName" style={{ fontWeight: 'bold' }}>Candidate Name</label>
                     <input
                         type="text"
@@ -242,7 +243,7 @@ function CandidateList() {
                     />
                 </div>
                 <button type="button" onClick={handleSaveChanges} className="btn btn-primary">Save Changes</button>
-                                </form>
+            </form>
                             </div>
                         </Box>
                     </Modal>
