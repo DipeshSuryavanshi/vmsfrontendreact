@@ -5,18 +5,33 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
 import { Avatar } from '@mui/material';
 import { Mail, MailLock } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
+    const navigate = useNavigate();
+
+    // Logout function
+    const handleLogout = () => {
+        // Implement your logout logic here, such as clearing user session
+        // For example, clear localStorage and redirect to the login page
+        localStorage.removeItem('token'); // Remove token from localStorage
+        navigate('/'); 
+    };
+
     return (
         <>
         <header id="header" class="header fixed-top d-flex align-items-center">
 <div className='d-flex align-items-center'>
         <div class="d-flex align-items-center justify-content-between">
-            <a href="#" class="logo d-flex align-items-center">
-                <img src={Logo} alt="logo"/>
-                <span class="d-none d-lg-block">Evision</span>
-            </a>
-            <div className='icon-box'> <RxHamburgerMenu /></div>
+        <div className='icon-box'> <RxHamburgerMenu /></div>
+           
+        <div className="logo-container">
+                            <a href="#" className="logo d-flex align-items-center">
+                                <img src={Logo} alt="logo"/>
+                                <span className="d-none d-lg-block">Evision</span>
+                            </a>
+                        </div>
            
         </div>
 
@@ -30,7 +45,7 @@ const Header = () => {
       </div>
             <div className='menu-icon'>
                 <Mail/>
-                <Avatar/>
+                <Avatar onClick={handleLogout} className="avatar-logout" />
 
             </div>
 

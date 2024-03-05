@@ -605,6 +605,25 @@
   .header-nav .profile .dropdown-item:hover {
     background-color: #f6f9ff;
   }
+
+  .icon-box {
+    /* Define the styles for the container */
+    width: 40px; /* Adjust the width as needed */
+    height: 40px; /* Adjust the height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px; /* Add some margin to create space between elements */
+    background-color: #ffffff; /* Set the background color */
+    border-radius: 50%; /* Make the container circular */
+    cursor: pointer; /* Change the cursor to indicate it's clickable */
+    transition: background-color 0.3s ease; /* Add transition for smoother hover effect */
+  
+    /* Define hover effect */
+    &:hover {
+      background-color: #f0f0f0; /* Change background color on hover */
+    }
+  }
   
   /*--------------------------------------------------------------
   # Sidebar
@@ -1276,4 +1295,68 @@
     margin-left: 10px; /* Adjust the margin as needed for the desired separation */
 }
 
-  
+.align-left {
+  text-align: left;
+}
+.avatar-logout:hover {
+  cursor: pointer; /* Change cursor to pointer on hover */
+  filter: brightness(90%); /* Reduce brightness on hover */
+  transition: filter 0.3s ease; /* Add transition effect */
+}
+.profile-tabs-container {
+  margin-left: -10px;
+}
+.profilehr {
+  width: 105.12%;
+  border: 1px solid #00000040;
+  margin-left: -21px;
+}
+.profile-inputs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 2%;
+}
+
+.profile-input-left,
+.profile-input-right {
+  flex: 1;
+  margin: 0 10px;
+}
+@media (max-width: 768px) {
+  .profile-input-left,
+  .profile-input-right {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+.profileLable {
+  color: #566a7f;
+}
+.profile-container {
+  height: 106%;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 60%;
+  margin-top: -4%;
+  margin-left: 25%; /* Adjust this value to shift right */
+  display: flex;
+  flex-direction: column;
+}
+
+
+@media (max-width: 768px) {
+  .profile-container {
+    width: 80%;
+    margin-left: 10%;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-container {
+    width: 120%;
+    margin-left: -4%;
+  }
+}

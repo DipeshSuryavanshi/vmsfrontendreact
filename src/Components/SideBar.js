@@ -60,10 +60,10 @@ const Sidebar = () => {
                     <Collapse in={canditateOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding className='list-box'>
 
-                            <ListItem className='list-item' onClick={() => navigate("/dashboard/register-caditate")}>Register Candidates</ListItem>
-                            <ListItem className='list-item'>Get All Candidates</ListItem>
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/register-candidate")}>Register Candidates</ListItem>
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-list")}>Get All Candidates</ListItem>
 
-
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-info")}> Candidate Detail</ListItem>
                         </List>
                     </Collapse>
 
