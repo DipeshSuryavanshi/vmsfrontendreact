@@ -1,437 +1,796 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useEffect} from "react";
 import SideBar from "../Components/SideBar";
 import Box from "@mui/material/Box";
 import NavBar from "../Components/NavBar";
+import Swal from "sweetalert2";
+import Select from "react-select"; 
+import { useNavigate } from 'react-router-dom';
 
-import { Link } from "react-router-dom";
+function CandidateInfo() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    fatherName: "",
+    motherName: "",
+    linkedinUrl:"",
+    skypeID: "",
+    facebookUrl: "",
+    whatsappNumber: "",
+    contactNo: "",
+    address: "",
+    email: "",
+    dateOfBirth: "",
+    aadharNumber: "",
+    panNumber: "",
+    skills: [],
+    totalExperience: "",
+    graduationInstituteName: "",
+    graduationName: "",
+    graduationStream: "",
+    graduationPassingYear: "",
+    graduationPercentage: "",
+    postgraduationInstituteName: "",
+    postgraduationName: "",
+    postgraduationStream: "",
+    postgraduationPassingYear: "",
+    postgraduationPercentage: "",
+    highSchoolName: "",
+    highSchoolPassingYear: "",
+    highSchoolPercentage: "",
+    secondarySchoolName: "",
+    secondarySchoolPassingYear: "",
+    secondarySchoolPercentage: "",
+  });
+  const navigate = useNavigate();
 
-import ProfileTabs from "./ProfileTabs";
+  const [activeTab, setActiveTab] = useState("personal");
+  const [showPostGraduation, setShowPostGraduation] = useState(false);
 
-// import { motion } from "framer-motion";
-
-function PersonalInfo() {
-  const [errors, setErrors] = useState({});
-  const [userId, setUserId] = useState("");
-  const [userName, setUserName] = useState("");
-  const [fatherName, setFatherName] = useState("");
-  const [motherName, setMotherName] = useState("");
-  const [fatherContactNumber, setFatherContactNumber] = useState("");
-  const [panNumber, setPanNumber] = useState("");
-  const [aadharNumber, setAadharNumber] = useState("");
-  const [currentAddress, setCurrentAddress] = useState("");
-  const [permanentAddress, setPermanentAddress] = useState("");
-  const [personalContactNumber, setPersonalContactNumber] = useState("");
-  const [personalMailId, setPersonalMailId] = useState("");
-  const [loggedIn, setLoggedIn] = useState(true);
-  const [isImageUploadModalOpen, setImageUploadModalOpen] = useState(false);
-
-  const openImageUploadModal = () => {
-    setImageUploadModalOpen(true);
-  };
-
-  const closeImageUploadModal = () => {
-    setImageUploadModalOpen(false);
-  };
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!fatherName) {
-      newErrors.fatherName = "Father Name is required";
-    }
-
-    if (!motherName) {
-      newErrors.motherName = "Mother Name is required";
-    }
-
-    if (!fatherContactNumber) {
-      newErrors.fatherContactNumber = "Father No. is required";
-    } else if (!/^\d{10}$/.test(fatherContactNumber)) {
-      newErrors.fatherContactNumber = "Father No. must be 10 digits";
-    }
-
-    if (!panNumber) {
-      newErrors.panNumber = "Pan Number is required";
-    }
-
-    if (!aadharNumber) {
-      newErrors.aadharNumber = "Aadhar Number is required";
-    }
-
-    if (!currentAddress) {
-      newErrors.currentAddress = "Current Address is required";
-    }
-
-    if (!permanentAddress) {
-      newErrors.permanentAddress = "Permanent Address is required";
-    }
-
-    if (!personalContactNumber) {
-      newErrors.personalContactNumber = "Personal No. is required";
-    } else if (!/^\d{10}$/.test(personalContactNumber)) {
-      newErrors.personalContactNumber = "Personal No. must be 10 digits";
-    }
-
-    if (!personalMailId) {
-      newErrors.personalMailId = "Personal Mail is required";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-//   useEffect(() => {
-//     const userData = JSON.parse(localStorage.getItem("user"));
-
-//     if (userData) {
-//       setUserId(userData.user_id);
-//       setUserName(userData.user_name);
-
-//       ProfileService.getPersonalDetailById(userData.user_id)
-//         .then((response) => {
-//           const personalDetails = response.data;
-//           setFatherName(personalDetails.fatherName || "");
-//           setMotherName(personalDetails.motherName || "");
-//           setFatherContactNumber(personalDetails.fatherContactNumber || "");
-//           setPanNumber(personalDetails.panNumber || "");
-//           setAadharNumber(personalDetails.aadharNumber || "");
-//           setCurrentAddress(personalDetails.currentAddress || "");
-//           setPermanentAddress(personalDetails.permanentAddress || "");
-//           setPersonalContactNumber(personalDetails.personalContactNumber || "");
-//           setPersonalMailId(personalDetails.personalMailId || "");
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching Personal details:", error);
-//         });
-//     }
-//   }, []);
-
-  const handleFatherNameChange = (e) => {
-    setFatherName(e.target.value);
-    if (errors.fatherName) {
-      setErrors((prevErrors) => ({ ...prevErrors, fatherName: "" }));
-    }
-  };
-
-  const handleMotherNameChange = (e) => {
-    setMotherName(e.target.value);
-    if (errors.motherName) {
-      setErrors((prevErrors) => ({ ...prevErrors, motherName: "" }));
-    }
-  };
-
-  const handleFatherContactNumberChange = (e) => {
-    const inputValue = e.target.value;
-    setFatherContactNumber(inputValue);
-
-    if (inputValue.length > 10) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        fatherContactNumber: "Father No. must be 10 digits",
-      }));
-    } else if (errors.fatherContactNumber) {
-      // Clear the error message if the input is valid
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        fatherContactNumber: "",
-      }));
-    }
-  };
-
-  const handlePersonalContactNumberChange = (e) => {
-    const inputValue = e.target.value;
-    setPersonalContactNumber(inputValue);
-
-    if (inputValue.length > 10) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        personalContactNumber: "Personal No. must be 10 digits",
-      }));
-    } else if (errors.personalContactNumber) {
-      // Clear the error message if the input is valid
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        personalContactNumber: "",
-      }));
-    }
-  };
-
-  const handlePanNumberChange = (e) => {
-    setPanNumber(e.target.value);
-    if (errors.panNumber) {
-      setErrors((prevErrors) => ({ ...prevErrors, panNumber: "" }));
-    }
-  };
-
-  const handleAadharNumberChange = (e) => {
-    setAadharNumber(e.target.value);
-    if (errors.aadharNumber) {
-      setErrors((prevErrors) => ({ ...prevErrors, aadharNumber: "" }));
-    }
-  };
-
-  const handleCurrentAddressChange = (e) => {
-    setCurrentAddress(e.target.value);
-    if (errors.currentAddress) {
-      setErrors((prevErrors) => ({ ...prevErrors, currentAddress: "" }));
-    }
-  };
-
-  const handlePermanentAddressChange = (e) => {
-    setPermanentAddress(e.target.value);
-    if (errors.permanentAddress) {
-      setErrors((prevErrors) => ({ ...prevErrors, permanentAddress: "" }));
-    }
-  };
-
-//   const handlePersonalMailIdChange = (e) => {
-//     setPersonalMailId(e.target.value);
-//     if (errors.personalMailId) {
-//       setErrors((prevErrors) => ({ ...prevErrors, personalMailId: "" }));
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     // if (validate()) {
-//     try {
-//       await ProfileService.submitPersonalDetails(
-//         fatherName,
-//         motherName,
-//         fatherContactNumber,
-//         panNumber,
-//         aadharNumber,
-//         currentAddress,
-//         permanentAddress,
-//         personalContactNumber,
-//         personalMailId,
-//         userId,
-//         userName
-//       );
-//       window.location.reload();
-
-//       console.log("Personal Details submitted successfully!");
-
-//       setFatherName("");
-//       setMotherName("");
-//       setFatherContactNumber("");
-//       setPanNumber("");
-//       setAadharNumber("");
-//       setCurrentAddress("");
-//       setPermanentAddress("");
-//       setPersonalContactNumber("");
-//       setPersonalMailId("");
-//       setUserId("");
-//       setUserName("");
-//     } catch (error) {
-//       console.error("Error submitting Personal Details:", error);
-//     }
-//   };
-
+  const [allSkills, setAllSkills] = useState([]);
+  const [token, setToken] = useState("");
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
+    // Fetch authorization token from localStorage
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
 
-    if (userData) {
-      setUserId(userData.user_id);
-      setUserName(userData.user_name);
+    // Fetch skills when the component mounts
+    async function fetchSkills() {
+      try {
+        const response = await fetch("http://localhost:8082/skill/getAllSkills", {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
+        if (response.ok) {
+          const skillsData = await response.json();
+          console.log("Skills Data:", skillsData);
+          setAllSkills(skillsData);
+          console.log("Skills Data:", allSkills);
+        } else {
+          console.error("Failed to fetch skills");
+        }
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
     }
-  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setLoggedIn(false);
-    window.location.href = "/";
+    fetchSkills();
+  }, []);
+  
+  const handleChange = (e) => {
+    if (e.target) {
+      const { name, value } = e.target;
+      let newValue = value;
+      switch (name) {
+        case "graduationInstituteName":
+        case "postgraduationInstituteName":
+        case "highSchoolName":
+        case "secondarySchoolName":
+          newValue = value.replace(/[^a-zA-Z\s]/g, "");
+          break;
+        case "graduationName":
+        case "postgraduationName":
+          newValue = value.replace(/[^a-zA-Z0-9]/g, "");
+          break;
+        case "graduationPassingYear":
+        case "postgraduationPassingYear":
+        case "highSchoolPassingYear":
+        case "secondarySchoolPassingYear":
+          newValue = value.replace(/[^\d]/g, "");
+          break;
+        case "graduationPercentage":
+        case "postgraduationPercentage":
+        case "highSchoolPercentage":
+        case "secondarySchoolPercentage":
+          newValue = value.replace(/[^0-9.]/g, "");
+          break;
+        case "secondarySchoolName":
+          newValue = value.replace(/[0-9.]/g, "");
+          break;
+        case "firstName":
+        case "lastName":
+        case "motherName":
+        case "fatherName":
+          newValue = value.replace(/[^a-zA-Z]/g, "");
+          break;
+        case "whatsappNumber":
+        case "contactNo":
+          newValue = value.replace(/[^\d]/g, "").slice(0, 10);
+          break;
+        case "aadharNumber":
+          newValue = value.replace(/[^\d]/g, "").slice(0, 12);
+          break;
+        case "panNumber":
+          newValue = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 10);
+          break;
+        default:
+          break;
+      }
+
+      setFormData({
+        ...formData,
+        [name]: newValue,
+      });
+    } else { // If the event target is from the Select component
+      const selectedOptions = e;
+      const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+      setFormData({
+        ...formData,
+        skills: selectedValues,
+      });
+    }
+  };
+  
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("http://localhost:8082/candidate/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful!",
+          text: "Candidate has been registered successfully.",
+          confirmButtonText: 'Ok'
+        }).then(()=>{
+          navigate("/dashboard/candidate-list");
+        });
+
+       
+        // You can perform additional actions here if needed after successful registration
+      } else {
+        // Handle the case where registration was not successful
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text: "Failed to register the candidate. Please try again later.",
+        });
+      }
+    } catch (error) {
+      // Handle any network errors or exceptions
+      console.error("Error registering candidate:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Failed to register the candidate. Please try again later.",
+      });
+    }
   };
 
   return (
     <>
-      <NavBar />
-      <Box height={100} />
-      <Box sx={{ display: "flex" }}>
-        <SideBar />
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <div>
-            {/* <UploadProfileImage /> */}
-
-            <div className="profile-container">
-              <ProfileTabs />
-              
-              
-                <span
-                  style={{
-                    marginLeft: "2%",
-                    marginTop: "-15px",
-                    color: "#566a7f",
-                  }}
-                >
-                  Enter Your Personal Info.
-                </span>
-
-                {/* <div>
-            
-              <button className="profile-image-link" onClick={openImageUploadModal}>
-                Upload Image
+  {/* <NavBar /> */}
+  <Box height={100} />
+  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    {/* Adjusted styling here */}
+    {/* <SideBar /> */}
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <div className="profile-container">
+       <h4>Complete your profile</h4>
+        <div>
+          <ul className="nav nav-tabs">
+            <li className="nav-item">
+              <button
+                className={`nav-link ${
+                  activeTab === "personal" ? "active" : ""
+                }`}
+                
+                onClick={() => setActiveTab("personal")}
+              >
+                Personal Details
               </button>
-           
-          </div> */}
-                <div className="profile-inputs-container">
-                  <div className="profile-input-left">
-                    <label className="profileLable">
-                      Father name
-                      <br />
-                      <input
-                        className="profile-input"
-                        onChange={handleFatherNameChange}
-                        value={fatherName}
-                      />
-                      {/* {errors.fatherName && (
-                    <span className="validation-error">
-                      {errors.fatherName}
-                    </span>
-                  )} */}
-                    </label>
-                    {/* <div>
-                  <label className="profileLable">
-                    Father Contact No. <br />
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link ${
+                  activeTab === "educational" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("educational")}
+              >
+                Educational Details
+              </button>
+            </li>
+          </ul>
+          <div className="tab-content">
+            <form onSubmit={handleSubmit}>
+              {/* Personal Details Form */}
+              {activeTab === "personal" && (
+                <div
+                  className={`tab-pane ${
+                    activeTab === "personal" ? "active" : ""
+                  }`}
+                ><div className="row mb-3">
+                  
+                <div className="col">
+                  <label>
+                    First Name:
                     <input
-                      className="profile-input"
-                      type="number"
-                      onChange={handleFatherContactNumberChange}
-                      value={fatherContactNumber}
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="First Name"
+                      required
                     />
-                    {errors.fatherContactNumber && (
-                      <span className="validation-error">
-                        {errors.fatherContactNumber}
-                      </span>
-                    )}
                   </label>
-                </div> */}
-                    <div>
-                      <label className="profileLable">
-                        Pan Card <br />
-                        <input
-                          className="profile-input"
-                          onChange={handlePanNumberChange}
-                          value={panNumber}
-                        />
-                        {/* {errors.panNumber && (
-                      <span className="validation-error">
-                        {errors.panNumber}
-                      </span>
-                    )} */}
-                      </label>
-                    </div>
-                    <div>
-                      <label className="profileLable">
-                        Permanent Address <br />
-                        <input
-                          className="profile-input"
-                          onChange={handlePermanentAddressChange}
-                          value={permanentAddress}
-                        />
-                        {/* {errors.permanentAddress && (
-                      <span className="validation-error">
-                        {errors.permanentAddress}
-                      </span>
-                    )} */}
-                      </label>
-                    </div>
-                    */
-                  </div>
-
-                  <div className="profile-input-right">
-                    <label className="profileLable">
-                      Mother Name <br />
-                      <input
-                        className="profile-input"
-                        onChange={handleMotherNameChange}
-                        value={motherName}
-                      />
-                      {/* {errors.motherName && (
-                    <span className="validation-error">
-                      {errors.motherName}
-                    </span>
-                  )} */}
-                    </label>
-                    <div>
-                      <label className="profileLable">
-                        Aadhar Card <br />
-                        <input
-                          className="profile-input"
-                          onChange={handleAadharNumberChange}
-                          type="number"
-                          value={aadharNumber}
-                        />
-                        {/* {errors.aadharNumber && (
-                      <span className="validation-error">
-                        {errors.aadharNumber}
-                      </span>
-                    )} */}
-                      </label>
-                    </div>
-                    <div>
-                      <label className="profileLable">
-                        Current Address <br />
-                        <input
-                          className="profile-input"
-                          onChange={handleCurrentAddressChange}
-                          value={currentAddress}
-                        />
-                        {/* {errors.currentAddress && (
-                      <span className="validation-error">
-                        {errors.currentAddress}
-                      </span>
-                    )} */}
-                      </label>
-                    </div>
-                    <div>
-                      <label className="profileLable">
-                        Personal Contact No.
-                        <br />
-                        <input
-                          className="profile-input"
-                          type="number"
-                          onChange={handlePersonalContactNumberChange}
-                          value={personalContactNumber}
-                        />
-                        {/* {errors.personalContactNumber && (
-                      <span className="validation-error">
-                        {errors.personalContactNumber}
-                      </span>
-                    )} */}
-                      </label>
-                    </div>
-                  </div>
                 </div>
-                <hr className="profilehr" />
-               
-                <div>
-                  {/* <button className="profile-submit-btn" onClick={handleSubmit}>
+                <div className="col">
+                  <label >
+                    Last Name:
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Last Name"
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col">
+                  <label>
+                    Father's Name:
+                    <input
+                      type="text"
+                      name="fatherName"
+                      value={formData.fatherName}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Father's Name"
+                    />
+                  </label>
+                </div>
+                <div className="col">
+                  <label>
+                    Mother's Name:
+                    <input
+                      type="text"
+                      name="motherName"
+                      value={formData.motherName}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Mother's Name"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col">
+                  <label>
+                    Skype ID:
+                    <input
+                      type="text"
+                      name="skypeID"
+                      value={formData.skypeID}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Skype ID"
+                    />
+                  </label>
+                </div>
+                <div className="col">
+                  <label>
+                    Facebook URL:
+                    <input
+                      type="text"
+                      name="facebookUrl"
+                      value={formData.facebookUrl}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Facebook URL"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col">
+                  <label>
+                    WhatsApp Number:
+                    <input
+                      type="number "
+                      name="whatsappNumber"
+                      value={formData.whatsappNumber}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="WhatsApp Number"
+                    />
+                  </label>
+                </div>
+                <div className="col">
+                  <label>
+                    Linkdin Id:
+                    <input
+                      type="text"
+                      name="linkedinUrl"
+                      value={formData.linkedinUrl}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Linkdin Id"
+                    />
+                  </label>
+                </div>
+              </div>
+              
+                  <div className="row mb-3">
+                  <div className="col">
+                      <label>
+                        Total Experience:
+                        <input
+                          type="number"
+                          name="totalExperience"
+                          value={formData.totalExperience}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Total Experience"
+                            required
+                        />
+                      </label>
+                    </div>
+                    <div className="col">
+                      <label >
+                        Contact Number:
+                        <input
+                          type="number  "
+                          name="contactNo"
+                          value={formData.contactNo}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Contact Number"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row mb-3">
+                    <div className="col">
+                      <label>
+                        Address:
+                        <input
+                          type="text"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Address"
+                        />
+                      </label>
+                    </div>
+                    <div className="col">
+                      <label>
+                        Email:
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Email"
+                        required
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row mb-3">
+                    <div className="col">
+                      <label>
+                        Date of Birth:
+                        <input
+                          type="date"
+                          name="dateOfBirth"
+                          value={formData.dateOfBirth}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Date of Birth"
+                        />
+                      </label>
+                    </div>
+                    <div className="col">
+                      <label>
+                        Aadhar Number:
+                        <input
+                          type="number"
+                          name="aadharNumber"
+                          value={formData.aadharNumber}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="Aadhar Number"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row mb-3">
+                    <div className="col">
+                      <label>
+                        PAN Number:
+                        <input
+                          type="text"
+                          name="panNumber"
+                          value={formData.panNumber}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder="PAN Number"
+                        />
+                      </label>
+                    </div>
+                    <div className="col">
+        <label>Skills:</label>
+        <Select
+  isMulti
+  name="skills"
+  options={allSkills.map(skill => ({ value: skill.id, label: skill.skillsName }))}
+  value={formData.skills.map(skillId => ({ value: skillId, label: allSkills.find(skill => skill.id === skillId).skillsName }))}
+  onChange={handleChange}
+/>
+
+      </div>
+                    
+                  </div>
+                  
+                </div>
+              )}
+
+              {/* Educational Details Form */}
+{/* Educational Details Form */}
+{activeTab === "educational" && (
+  <div
+    className={`tab-pane ${
+      activeTab === "educational" ? "active" : ""
+    }`}
+  >
+    {/* College Detail Section */}
+    <div className="mb-4">
+ 
+      <h5>Graduation Detail </h5>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            College Name:
+            <input
+              type="text"
+              name="graduationInstituteName"
+              value={formData.graduationInstituteName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="College Name"
+              required  
+            />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            Degree Name:
+            <input
+              type="text"
+              name="graduationName"
+              value={formData.graduationName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Name"
+            required    />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Degree Percentage:
+            <input
+              type="number  "
+              name="graduationPercentage"
+              value={formData.graduationPercentage}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Percentage"
+           required
+           />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            Stream:
+            <input
+              type="text"
+              name="graduationStream"
+              value={formData.graduationStream}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Stream"
+              required
+           />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Degree Passing Year:
+            <input
+              type="number  "
+              name="graduationPassingYear"
+              value={formData.graduationPassingYear}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Passing Year"
+              required
+            />
+          </label>
+        </div>
+      </div>
+      <div className="col-md-12">
+                         
+                         <button
+                           type="button"
+                           className="btn btn-primary"
+                           onClick={() => setShowPostGraduation(true)}
+                         >
+                           Add Post Graduation
+                         </button>
+                        
+                       </div>
+                      
+                       {/* Post Graduation Detail Section */}
+                      {showPostGraduation && (
+                        <div className="row mb-4">
+                          <div className="col-md-12">
+                             <hr></hr>
+                            <h5>Post Graduation Detail</h5>
+                           
+                            {/* Post graduation detail fields */}
+                            <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            College Name:
+            <input
+              type="text"
+              name="postgraduationInstituteName"
+              value={formData.postgraduationInstituteName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="College Name"
+            />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            Degree Name:
+            <input
+              type="text"
+              name="postgraduationName"
+              value={formData.postgraduationName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Name"
+            />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Degree Percentage:
+            <input
+              type="text"
+              name="postgraduationPercentage"
+              value={formData.postgraduationPercentage}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Percentage"
+            />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            Stream:
+            <input
+              type="text"
+              name="postgraduationStream"
+              value={formData.postgraduationStream}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Stream"
+            />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Degree Passing Year:
+            <input
+              type="text"
+              name="postgraduationPassingYear"
+              value={formData.postgraduationPassingYear}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Degree Passing Year"
+            />
+          </label>
+        </div>
+      </div>
+                          </div>
+                        </div>
+                      )}
+                       
+    </div>
+<hr></hr>
+
+
+    {/* High School Detail Section */}
+    <div className="mb-4">
+      <h5>High School Detail</h5>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            High School Name:
+            <input
+              type="text"
+              name="highSchoolName"
+              value={formData.highSchoolName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="High School Name"
+            required  
+            />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            High School Passing Year:
+            <input
+              type="number"
+              name="highSchoolPassingYear"
+              value={formData.highSchoolPassingYear}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="High School Passing Year"
+                        required
+            />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            High School Percentage:
+            <input
+              type="number"
+              name="highSchoolPercentage"
+              value={formData.highSchoolPercentage}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="High School Percentage"
+                        required
+           />
+          </label>
+        </div>
+      </div>
+    </div>
+<hr></hr>
+    {/* Secondary School Detail Section */}
+    <div className="mb-4">
+      <h5>Secondary School Detail</h5>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Secondary School Name:
+            <input
+              type="text"
+              name="secondarySchoolName"
+              value={formData.secondarySchoolName}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Secondary School Name"
+                        required
+            />
+          </label>
+        </div>
+        <div className="col-md-6">
+          <label>
+            Secondary School Passing Year:
+            <input
+              type="number"
+              name="secondarySchoolPassingYear"
+              value={formData.secondarySchoolPassingYear}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Secondary School Passing Year"
+                        required
+            />
+          </label>
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>
+            Secondary School Percentage:
+            <input
+              type="number  "
+              name="secondarySchoolPercentage"
+              value={formData.secondarySchoolPercentage}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Secondary School Percentage"
+                        required  
+            />
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+              {/* Navigation buttons */}
+              {activeTab === "personal" && (
+               <div className="row mb-3">
+  <div className="col text-end">
+    <button
+      type="button"
+      className="btn btn-primary ms-auto"
+      onClick={() => setActiveTab("educational")}
+    >
+      Next
+    </button>
+  </div>
+</div>
+              )}
+              {activeTab === "educational" && (
+                <>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="btn btn-secondary "
+                    onClick={() => setActiveTab("personal")}
+                  >
+                    Previous
+                  </button>
+                  <span>        </span>
+                 
+                  <button type="submit" className="btn btn-primary ">
                     Submit
-                  </button> */}
-                </div>
-             
-              {/* <a
-              href="/TimeSheet"
-              className="Education-back-link"
-            >
-              Back To TimeSheet
-            </a> */}
-
-              <Link to="/BankDetails">
-                <button className="profile-next-btn">Next</button>
-              </Link>
+                  </button>
+                  </div>
+                </>
+                  )}
+                </form>
+              </div>
             </div>
           </div>
         </Box>
       </Box>
-      {/* {isImageUploadModalOpen && (
-        <UploadProfileImage onClose={closeImageUploadModal} />
-      )} */}
     </>
   );
 }
 
-export default PersonalInfo;
+export default CandidateInfo;

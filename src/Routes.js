@@ -8,6 +8,8 @@ import CandidateRegistration from './Pages/CandidateRegistration';
 import CandidateList from './Components/CandidateList';
 import CandidateInfo from './Pages/CandidateInfo';
 import Header from './Components/Header';
+import AddSkillForm from './Pages/AddSkillForm';
+import CandidateProfile from './Pages/CandidateProfile';
 
 function isLoggedIn() {
   const token = localStorage.getItem('token');
@@ -32,6 +34,8 @@ const Routes = () => {
               <Route path="register-vendor" element={<VendorRegistration />} />
               <Route path="candidate-list" element={<CandidateList />} />
               <Route path="candidate-info" element={<CandidateInfo />} />
+              <Route path="candidate-profile" element={<CandidateProfile />} />
+              <Route path="add-skill" element={<AddSkillForm />} />
             </Route>
             
           </>

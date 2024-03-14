@@ -3,7 +3,7 @@ import React from 'react';
 import Logo from "../img/logo.png"
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
-import { Avatar } from '@mui/material';
+import { Avatar,Tooltip } from '@mui/material';
 import { Mail, MailLock } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,18 +35,19 @@ const Header = () => {
            
         </div>
 
-        <div class="search-bar">
+        {/* <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
                 <input type="text" name="query" placeholder="Search" title="Enter search keyword"/>
                 <button type="submit" title="Search"><CiSearch/></button>
             </form>
-        </div>
+        </div> */}
 
       </div>
-            <div className='menu-icon'>
+            <div className='menu-icon '>
                 <Mail/>
+                <Tooltip title="Logout">
                 <Avatar onClick={handleLogout} className="avatar-logout" />
-
+                </Tooltip>
             </div>
 
     </header>

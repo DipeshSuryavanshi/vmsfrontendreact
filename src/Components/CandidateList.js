@@ -3,7 +3,6 @@ import axios from 'axios';
 import moment from 'moment';
 import { Delete, Edit } from '@mui/icons-material';
 import Swal from 'sweetalert2';
-import Header from './Header';
 import { Box, Modal, Stack } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 
@@ -27,7 +26,7 @@ function CandidateList() {
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(2); 
+    const [itemsPerPage, setItemsPerPage] = useState(4);
 
     useEffect(() => {
         fetchCandidateData();
@@ -40,14 +39,77 @@ function CandidateList() {
         try {
             const token = localStorage.getItem('token');
             const res = await axios.get('http://localhost:8082/candidate/getAll',
-            {headers:
-                {'Authorization': `Bearer ${token}`}
-        });
+                {
+                    headers:
+                        { 'Authorization': `Bearer ${token}` }
+                });
             setCandidates(res?.data || []);
         } catch (err) {
             console.log(err);
         }
     };
+    
+    // Validation function for the form fields
+    const validateFormData = (data) => {
+        if (!data.firstName || !data.lastName || !data.contactNo || !data.address || !data.totalExperience || !data.dateOfBirth) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'All fields are required!',
+                customClass: {
+                    container: 'sweet-alert-container',
+                  },
+            });
+            return false;
+        }
+
+        // Validation for first name and last name (should not contain numeric values)
+        const namePattern = /^[a-zA-Z]+$/;
+        if (!namePattern.test(data.firstName) || !namePattern.test(data.lastName)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'First name and last name should not contain numeric values!',
+                customClass: {
+                    container: 'sweet-alert-container',
+                  },
+
+            });
+            return false;
+        }
+
+        // Validation for contact number (should be numeric and have 10 digits)
+        const contactNoPattern = /^\d{10}$/;
+        if (!contactNoPattern.test(data.contactNo)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Contact number should be numeric and should have 10 digits!',
+                customClass: {
+                    container: 'sweet-alert-container',
+                },
+                });
+            return false;
+        }
+
+        // Validation for overall experience (should be numeric)
+        const experiencePattern = /^\d+$/;
+        if (!experiencePattern.test(data.totalExperience)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Overall experience should be numeric!',
+                customClass: {
+                    container: 'sweet-alert-container',
+                },
+            });
+            return false;
+        }
+
+        // All validations passed
+        return true;
+    };
+
     const deleteCandidateData = async (id) => {
         try {
             const token = localStorage.getItem('token');
@@ -56,19 +118,19 @@ function CandidateList() {
                     'Authorization': `Bearer ${token}`
                 }
             });
-    
+
             // Show success message using SweetAlert if the deletion is successful
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
                 text: 'Candidate deleted successfully!',
             });
-    
+
             // Fetch updated candidate data after deletion
             fetchCandidateData();
         } catch (err) {
             console.log(err);
-    
+
             // Show error message using SweetAlert if deletion fails
             Swal.fire({
                 icon: 'error',
@@ -77,7 +139,7 @@ function CandidateList() {
             });
         }
     };
-    
+
 
     const handleEdit = async (id) => {
         try {
@@ -98,10 +160,17 @@ function CandidateList() {
         try {
             if (selectedCandidate) {
                 const { id, ...data } = selectedCandidate;
+                
+                // Validate form data
+                if (!validateFormData(data)) {
+                    return;
+                }
+
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`http://localhost:8082/candidate/updateCandidate/${id}`, data,
-                {headers :{'Authorization' : `Bearer ${token}`}
-            });
+                    {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
                 fetchCandidateData();
                 handleClose();
                 Swal.fire({
@@ -114,6 +183,7 @@ function CandidateList() {
             console.log(err);
         }
     };
+
     // Change page
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -137,6 +207,7 @@ function CandidateList() {
                             <th>Contact No</th>
                             <th>Address</th>
                             <th>Overall Experience</th>
+                            <th>Skill</th>
                             <th>Date of Birth</th>
                             <th>Email</th>
                             <th>Action</th>
@@ -145,10 +216,11 @@ function CandidateList() {
                     <tbody>
                         {currentCandidates.map((candidate) => (
                             <tr key={candidate.id}>
-                                <td>{candidate.candidateName}</td>
+                                <td>{candidate.firstName + ' ' + candidate.lastName}</td>
                                 <td>{candidate.contactNo || 'N/A'}</td>
                                 <td>{candidate.address}</td>
-                                <td>{candidate.overallExperience}</td>
+                                <td>{candidate.totalExperience}</td>
+                                <td>{candidate.skills.join(", ")}</td>
                                 <td>{moment(candidate.dateOfBirth).format("DD-MM-YYYY")}</td>
                                 <td>{candidate.email}</td>
                                 <td className='icons'>
@@ -182,68 +254,70 @@ function CandidateList() {
                                 <h2>Edit Candidate</h2>
                                 <hr></hr>
                                 <form>
-                <div className="form-group align-left">
-                    <label htmlFor="candidateName" style={{ fontWeight: 'bold' }}>Candidate Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="candidateName"
-                        value={selectedCandidate.candidateName}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, candidateName: e.target.value })}
-                    />
-                </div>
-                <div className="form-group align-left">
-                    <label htmlFor="contactNo" style={{ fontWeight: 'bold' }}>Contact No</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="contactNo"
-                        value={selectedCandidate.contactNo}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, contactNo: e.target.value })}
-                    />
-                </div>
-                <div className="form-group align-left">
-                    <label htmlFor="address"style={{ fontWeight: 'bold' }}>Address</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="address"
-                        value={selectedCandidate.address}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, address: e.target.value })}
-                    />
-                </div>
-                <div className="form-group align-left">
-                    <label htmlFor="overallExperience"style={{ fontWeight: 'bold' }}>Overall Experience</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="overallExperience"
-                        value={selectedCandidate.overallExperience}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, overallExperience: e.target.value })}
-                    />
-                </div>
-                <div className="form-group align-left">
-                    <label htmlFor="dateOfBirth"style={{ fontWeight: 'bold' }}>Date of Birth</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        id="dateOfBirth"
-                        value={selectedCandidate.dateOfBirth}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, dateOfBirth: e.target.value })}
-                    />
-                </div>
-                <div className="form-group align-left">
-                    <label htmlFor="email"style={{ fontWeight: 'bold' }}>Email</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        value={selectedCandidate.email}
-                        onChange={(e) => setSelectedCandidate({ ...selectedCandidate, email: e.target.value })}
-                    />
-                </div>
-                <button type="button" onClick={handleSaveChanges} className="btn btn-primary">Save Changes</button>
-            </form>
+                                    <div className="form-group align-left">
+                                        <label htmlFor="firstName" style={{ fontWeight: 'bold' }}>First Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="firstName"
+                                            value={selectedCandidate.firstName}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, firstName: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group align-left">
+                                        <label htmlFor="lastName" style={{ fontWeight: 'bold' }}>Last Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="lastName"
+                                            value={selectedCandidate.lastName}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, lastName: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="form-group align-left">
+                                        <label htmlFor="contactNo" style={{ fontWeight: 'bold' }}>Contact No</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="contactNo"
+                                            value={selectedCandidate.contactNo}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, contactNo: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group align-left">
+                                        <label htmlFor="address" style={{ fontWeight: 'bold' }}>Address</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="address"
+                                            value={selectedCandidate.address}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, address: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group align-left">
+                                        <label htmlFor="overallExperience" style={{ fontWeight: 'bold' }}>Overall Experience</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="overallExperience"
+                                            value={selectedCandidate.totalExperience}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, totalExperience: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group align-left">
+                                        <label htmlFor="dateOfBirth" style={{ fontWeight: 'bold' }}>Date of Birth</label>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            id="dateOfBirth"
+                                            value={selectedCandidate.dateOfBirth}
+                                            onChange={(e) => setSelectedCandidate({ ...selectedCandidate, dateOfBirth: e.target.value })}
+                                        />
+                                    </div>
+                                    
+                                    <button type="button" onClick={handleSaveChanges} className="btn btn-primary">Save Changes</button>
+                                </form>
                             </div>
                         </Box>
                     </Modal>
