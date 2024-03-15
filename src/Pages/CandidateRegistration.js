@@ -7,6 +7,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import logo from "../img/logo1.png";
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 function CandidateRegistration() {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ function CandidateRegistration() {
 
     // Assuming you have a function to retrieve the auth token
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8081/candidate/register', {
+    fetch(`${API_URL}candidate/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from "../img/logo1.png"
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
-
+const API_URL = process.env.REACT_APP_API_URL;
 function VendorRegistration() {
   const initialValues = {
     vendorName: '',
@@ -21,7 +21,7 @@ function VendorRegistration() {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
-    const apiUrl = 'http://localhost:8081/vendor/register';
+    const apiUrl = `${API_URL}vendor/register`;
 
     try {
       const token = localStorage.getItem('token');

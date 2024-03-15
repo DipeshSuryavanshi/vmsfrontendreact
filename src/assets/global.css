@@ -33,9 +33,13 @@
   h2,
   h3,
   h4,
-  h5,
+  h5{
+    font-family: "Nunito", sans-serif;
+    color: firebrick;
+  }
   h6 {
     font-family: "Nunito", sans-serif;
+    
   }
   
   /*--------------------------------------------------------------
@@ -346,7 +350,7 @@
   }
   
   .nav-tabs-bordered .nav-link.active {
-    background-color: #fff;
+    background-color: #ffffff;
     color: #4154f1;
     border-bottom: 2px solid #4154f1;
   }
@@ -640,7 +644,8 @@
     padding: 20px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #aab7cf transparent;
+    /* scrollbar-color: #aab7cf transparent; */
+    
     box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
     background-color: #fff;
   }
@@ -1253,7 +1258,7 @@
   /*--------------------------------------------------------------
   # Footer
   --------------------------------------------------------------*/
-  .footer {
+  /* .footer {
     padding: 20px 0;
     font-size: 14px;
     transition: all 0.3s;
@@ -1270,6 +1275,17 @@
     text-align: center;
     font-size: 13px;
     color: #012970;
+  } */
+  .footer {
+    position: fixed;
+    left: 0;
+    height: 3%;
+    bottom: 0;
+    width: 100%;
+    background-color: #523c8b;
+    text-align: center;
+    font-size: 13px;
+    color: white;
   }
 
   .icon-box svg {
@@ -1304,7 +1320,7 @@
   transition: filter 0.3s ease; /* Add transition effect */
 }
 .profile-tabs-container {
-  margin-left: -10px;
+  margin-left: 10px;
 }
 .profilehr {
   width: 105.12%;
@@ -1336,12 +1352,12 @@
 .profile-container {
   height: 106%;
   padding: 20px;
-  background-color: #fff;
+  background-color: aliceblue;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 60%;
   margin-top: -4%;
-  margin-left: 25%; /* Adjust this value to shift right */
+  margin-left: 32%; /* Adjust this value to shift right */
   display: flex;
   flex-direction: column;
 }
@@ -1359,4 +1375,79 @@
     width: 120%;
     margin-left: -4%;
   }
+}
+.profile-tab-btn {
+  margin: 5px;
+  padding: 10px;
+  font-size: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  background-color: #a1acb857;
+}
+
+/* .profile-tab-btn.active {
+  background-color: #523c8b;
+  color: white;
+} */
+
+.profile-tab-btn:not(.active):hover {
+  background-color: lightgray;
+}
+
+@media (max-width: 768px) {
+  .profilehr {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .profile-submit-btn,
+  .profile-next-btn {
+    width: 30%;
+    margin-left: 35%;
+  }
+}
+@media (max-width: 576px) {
+  .profile-next-btn {
+    width: 15%;
+    left: -3%;
+    position: relative;
+    top: 65%;
+  }
+}
+.profile-next-btn {
+  background-color: #da0909;
+  color: #fff;
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  margin-left: 91%;
+}
+
+.profile-next-btn:hover {
+  background-color: #da0909;
+}
+.candidate-form {
+  margin-top: 90px; /* Adjust margin-top to create space between the header and the form */
+  padding: 20px; /* Add padding for spacing and aesthetics */
+}
+
+/* Adjustments for the form elements */
+.candidate-form label {
+  margin-bottom: 10px; /* Add spacing between labels */
+}
+
+.candidate-form input,
+.candidate-form select {
+  width: 20%; /* Make form inputs full width */
+  padding: 10px; /* Add padding for better appearance */
+  margin-bottom: 15px; /* Add spacing between form inputs */
+}
+
+.margin-top-80{
+  margin-top: 80px !important;
 }

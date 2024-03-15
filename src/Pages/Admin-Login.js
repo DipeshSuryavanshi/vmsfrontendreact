@@ -5,6 +5,8 @@ import logo from '../img/logo.png';
 import './Admin-Login.css';
 import axios from 'axios'; // Import axios for making HTTP requests
 
+
+const API_URL = process.env.REACT_APP_API_URL;
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,7 +28,7 @@ const AdminLogin = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:8081/authenticate", {
+            const response = await axios.post(`${API_URL}authenticate`, {
                 email: email,
                 password: password
             });

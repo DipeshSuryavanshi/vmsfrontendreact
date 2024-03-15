@@ -109,3 +109,6 @@ header {
         padding-top: 0;
     }
 }
+.sweet-alert-container {
+    z-index: 1600 !important; 
+  }

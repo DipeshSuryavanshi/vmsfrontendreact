@@ -7,8 +7,13 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
+import AddSkillForm from '../Pages/AddSkillForm'; // Adjust the import path
+import { FcTodoList } from "react-icons/fc";
+import { FcButtingIn } from "react-icons/fc";
 
+import { FcBusinessman } from "react-icons/fc";
+const API_URL = process.env.REACT_APP_API_URL;
 const Sidebar = () => {
     const [open, setOpen] = React.useState(false);
     const [canditateOpen, setCanditateOpen] = useState(false)
@@ -34,7 +39,7 @@ const Sidebar = () => {
                 <List className="nav-item">
                     <ListItemButton onClick={handleClick}>
 
-                        <ListItem className='list-item-main'>Vendors</ListItem>
+                        <ListItem className='list-item-main'><FcBusinessman/>Vendors</ListItem>
                         {open ? <ExpandLess className='expand-icon' /> : <ExpandMore className='expand-icon' />}
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
@@ -54,16 +59,19 @@ const Sidebar = () => {
                 <List className="nav-item">
                     <ListItemButton onClick={handleCanditate}>
 
-                        <ListItem className='list-item-main'>Candidates</ListItem>
+                        <ListItem className='list-item-main'><FcButtingIn/>Candidates</ListItem>
                         {canditateOpen ? <ExpandLess className='expand-icon' /> : <ExpandMore className='expand-icon' />}
                     </ListItemButton>
                     <Collapse in={canditateOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding className='list-box'>
 
-                            <ListItem className='list-item' onClick={() => navigate("/dashboard/register-candidate")}>Register Candidates</ListItem>
+                            {/* <ListItem className='list-item' onClick={() => navigate("/dashboard/register-candidate")}>Register Candidates</ListItem> */}
+
+                            <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-info")}> Candidate Registration</ListItem>
                             <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-list")}>Get All Candidates</ListItem>
 
-                            <ListItem className='list-item' onClick={() => navigate("/dashboard/candidate-info")}> Candidate Detail</ListItem>
+                           
+                            <ListItem className="list-item" onClick={() => navigate("/dashboard/candidate-profile")}>Candidate Profile</ListItem> 
                         </List>
                     </Collapse>
 
@@ -71,15 +79,19 @@ const Sidebar = () => {
 
 
 
+                <List className="nav-item">
+                    <ListItemButton>
+                        <Link to="/dashboard/add-skill"><FcTodoList/>Add Skills</Link>
+                    </ListItemButton>
+                </List>
 
 
-
-                <li class="nav-item">
+                {/* <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="bi bi-plus-circle"></i>
                         <span>Add Skills</span>
                     </a>
-                </li>
+                </li> */}
             </ul>
 
 

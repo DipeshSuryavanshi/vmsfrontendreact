@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import './NavBar.css'; // Import your CSS file
 
-
 const NavBar = () => {
   return (
     <>
@@ -12,7 +11,7 @@ const NavBar = () => {
           <span className="text-body-secondary">Toggleable via the navbar brand.</span>
         </div>
       </div>
-      <Navbar expand="lg" variant="dark" bg="dark">
+      <Navbar expand="lg" variant="dark" bg="primary"> {/* Change bg="dark" to bg="primary" */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
