@@ -4,7 +4,7 @@ import { Box, Modal, Button, Stack, TextField } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import CandidateForm from './CandidateProfile';
-
+const API_URL = process.env.REACT_APP_API_URL;
 const style = {
     position: 'absolute',
     top: '50%',
@@ -38,7 +38,7 @@ function AddSkillForm() {
     }, []);
 
     const fetchSkills = () => {
-        fetch('http://localhost:8082/skill/getAllSkills', {
+        fetch(`${API_URL}skill/getAllSkills`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -65,7 +65,7 @@ function AddSkillForm() {
             skillsName: newSkillName
         };
 
-        fetch('http://localhost:8082/skill/add', {
+        fetch(`${API_URL}skill/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function AddSkillForm() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // If user confirms deletion, proceed with the delete action
-                fetch(`http://localhost:8082/skill/delete/${id}`, {
+                fetch(`${API_URL}skill/delete/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`

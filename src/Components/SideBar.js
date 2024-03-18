@@ -13,7 +13,7 @@ import { FcTodoList } from "react-icons/fc";
 import { FcButtingIn } from "react-icons/fc";
 
 import { FcBusinessman } from "react-icons/fc";
-
+const API_URL = process.env.REACT_APP_API_URL;
 const Sidebar = () => {
     const [open, setOpen] = React.useState(false);
     const [canditateOpen, setCanditateOpen] = useState(false)

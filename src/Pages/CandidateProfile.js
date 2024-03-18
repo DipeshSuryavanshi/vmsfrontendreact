@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
+
+const API_URL = process.env.REACT_APP_API_URL;
 const CandidateForm = () => {
   const [formData, setFormData] = useState({
     id: '',
@@ -18,7 +20,7 @@ const CandidateForm = () => {
     const fetchCandidates = async () => {
       try {
         const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
-        const response = await fetch('http://localhost:8082/candidate/getAll', {
+        const response = await fetch(`${API_URL}candidate/getAll`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json' // Assuming your API expects JSON data
@@ -39,7 +41,7 @@ const CandidateForm = () => {
     const fetchSkills = async () => {
       try {
         const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
-        const response = await fetch('http://localhost:8082/skill/getAllSkills', {
+        const response = await fetch(`${API_URL}skill/getAllSkills`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json' // Assuming your API expects JSON data
@@ -106,7 +108,7 @@ const CandidateForm = () => {
   
     try {
       const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
-      const response = await fetch('http://localhost:8082/candidate/upload', {
+      const response = await fetch(`${API_URL}candidate/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -118,6 +120,7 @@ const CandidateForm = () => {
       
       if (response.ok) {
         console.log('Form submitted successfully');
+
        
             await Swal.fire({
               icon: 'success',
@@ -125,7 +128,7 @@ const CandidateForm = () => {
               text: 'Your registration has been completed successfully!',
             });
            
-      
+            window.location.reload();
         // Handle success, reset form, show success message, etc.
       } else {
         console.error('Error submitting form:', response.statusText);
@@ -134,6 +137,7 @@ const CandidateForm = () => {
             title: 'Oops...',
             text: 'An error occurred while submitting the form. Please try again later.',
           });
+        
         // Handle error, show error message, etc.
       }
     } catch (error) {

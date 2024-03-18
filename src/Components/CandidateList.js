@@ -5,7 +5,7 @@ import { Delete, Edit } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import { Box, Modal, Stack } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-
+const API_URL = process.env.REACT_APP_API_URL;
 const style = {
     position: 'absolute',
     top: '50%',
@@ -26,7 +26,7 @@ function CandidateList() {
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(4);
+    const [itemsPerPage, setItemsPerPage] = useState(6);
 
     useEffect(() => {
         fetchCandidateData();
@@ -38,7 +38,7 @@ function CandidateList() {
     const fetchCandidateData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:8082/candidate/getAll',
+            const res = await axios.get(`${API_URL}candidate/getAll`,
                 {
                     headers:
                         { 'Authorization': `Bearer ${token}` }
@@ -113,7 +113,7 @@ function CandidateList() {
     const deleteCandidateData = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.delete(`http://localhost:8082/candidate/delete/${id}`, {
+            const res = await axios.delete(`${API_URL}candidate/delete/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -144,7 +144,7 @@ function CandidateList() {
     const handleEdit = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`http://localhost:8082/candidate/getCandidate/${id}`, {
+            const res = await axios.get(`${API_URL}candidate/getCandidate/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -167,7 +167,7 @@ function CandidateList() {
                 }
 
                 const token = localStorage.getItem('token');
-                const res = await axios.put(`http://localhost:8082/candidate/updateCandidate/${id}`, data,
+                const res = await axios.put(`${API_URL}candidate/updateCandidate/${id}`, data,
                     {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });

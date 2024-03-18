@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Select from "react-select"; 
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL;
 function CandidateInfo() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -56,7 +57,7 @@ function CandidateInfo() {
     // Fetch skills when the component mounts
     async function fetchSkills() {
       try {
-        const response = await fetch("http://localhost:8082/skill/getAllSkills", {
+        const response = await fetch(`${API_URL}skill/getAllSkills`, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
@@ -147,7 +148,7 @@ function CandidateInfo() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:8082/candidate/register", {
+      const response = await fetch(`${API_URL}candidate/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -7,6 +7,8 @@ import Pagination from '@mui/material/Pagination';
 import { Box, Modal, Stack } from '@mui/material';
 import Swal from 'sweetalert2';
 
+const API_URL = process.env.REACT_APP_API_URL;
+console.log("API_URL",API_URL);
 const style = {
   position: 'absolute',
   top: '50%',
@@ -27,7 +29,8 @@ function VendorList() {
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
+ 
 
   useEffect(() => {
     fetchVendorData();
@@ -38,7 +41,7 @@ function VendorList() {
     try {
         const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-        const res = await axios.delete(`http://localhost:8082/vendor/delete/${id}`, {
+        const res = await axios.delete(`${API_URL}vendor/delete/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // Include the token in the Authorization header
             }
@@ -68,11 +71,15 @@ function VendorList() {
   const fetchVendorData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:8082/vendor/getAll', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        `${API_URL}vendor/getAll`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+      
       setVendors(res?.data || []);
     } catch (err) {
       console.log(err);
@@ -82,7 +89,7 @@ function VendorList() {
   const handleEdit = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`http://localhost:8082/vendor/getVendor/${id}`, {
+      const res = await axios.get(`${API_URL}vendor/getVendor/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +113,7 @@ function VendorList() {
         }
 
         const token = localStorage.getItem('token');
-        const res = await axios.put(`http://localhost:8082/vendor/updateVendor/${id}`, data, {
+        const res = await axios.put(`${API_URL}vendor/updateVendor/${id}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -157,7 +164,7 @@ const deleteVendorDate = async (id) => {
         try {
             const token = localStorage.getItem('token'); // Retrieve the token from localStorage
     
-            const res = await axios.delete(`http://localhost:8082/vendor/delete/${id}`, {
+            const res = await axios.delete(`${API_URL}vendor/delete/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}` // Include the token in the Authorization header
                 }

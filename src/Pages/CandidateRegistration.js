@@ -7,6 +7,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import logo from "../img/logo1.png";
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 function CandidateRegistration() {
   const [formData, setFormData] = useState({
