@@ -4,7 +4,7 @@ import AdminLogin from './Pages/Admin-Login';
 import Dashboard from './Pages/Dashboard';
 import VendorList from './Components/VendorList';
 import VendorRegistration from './Pages/VendorRegistration';
-import CandidateRegistration from './Pages/CandidateRegistration';
+
 import CandidateList from './Components/CandidateList';
 import CandidateInfo from './Pages/CandidateInfo';
 import Header from './Components/Header';
@@ -30,7 +30,7 @@ const Routes = () => {
             <Route path="/dashboard" element={<Dashboard />}>
               {/* Nested routes under Dashboard */}
               <Route path="vendor-list" element={<VendorList />} />
-              <Route path="register-candidate" element={<CandidateRegistration />} />
+              {/* <Route path="register-candidate" element={<CandidateRegistration />} /> */}
               <Route path="register-vendor" element={<VendorRegistration />} />
               <Route path="candidate-list" element={<CandidateList />} />
               <Route path="candidate-info" element={<CandidateInfo />} />

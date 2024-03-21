@@ -1451,3 +1451,14 @@
 .margin-top-80{
   margin-top: 80px !important;
 }
+
+.custom-swal-container {
+  z-index: 99999 !important;
+}
+.invalid-input {
+  border-color: red; /* Change border color to red for invalid input */
+}
+.error-message {
+  color: red; /* Set text color to red for error messages */
+  font-size: 0.8rem; /* Adjust font size as needed */
+}

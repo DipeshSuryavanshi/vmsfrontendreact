@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 import { Box, Modal, Button, Stack, TextField } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import Swal from 'sweetalert2';
-import CandidateForm from './CandidateProfile';
+
 const API_URL = process.env.REACT_APP_API_URL;
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -18,11 +19,6 @@ const style = {
     padding: '20px',
     textAlign: 'center',
     color: '#333',
-};
-
-const paginationStyle = {
-    marginTop: '20px', // Adjust as needed
-    textAlign: 'center',
 };
 
 function AddSkillForm() {
@@ -64,7 +60,7 @@ function AddSkillForm() {
         const newSkillData = {
             skillsName: newSkillName
         };
-
+    
         fetch(`${API_URL}skill/add`, {
             method: 'POST',
             headers: {
@@ -86,16 +82,21 @@ function AddSkillForm() {
                     timer: 1500
                 });
             } else {
-                throw new Error('Failed to add skill');
+                response.json().then(data => {
+                    if (response.status === 409) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: data.message,
+                            customClass: {
+                                container: 'custom-swal-container',
+                            },
+                        });
+                    } else {
+                        throw new Error('Failed to add skill');
+                    }
+                });
             }
-        })
-        .catch(error => {
-            console.error('Error adding skill:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Failed to add skill. Please try again later.',
-            });
         });
     };
 
@@ -104,7 +105,6 @@ function AddSkillForm() {
     };
 
     const handleDeleteSkill = (id) => {
-        // Show SweetAlert confirmation popup
         Swal.fire({
             title: 'Are you sure?',
             text: 'You will not be able to recover this skill!',
@@ -115,7 +115,6 @@ function AddSkillForm() {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                // If user confirms deletion, proceed with the delete action
                 fetch(`${API_URL}skill/delete/${id}`, {
                     method: 'DELETE',
                     headers: {
@@ -156,8 +155,7 @@ function AddSkillForm() {
 
     return (
         <main>
-            <section className="content-section  profile-container margin-top-80 ">
-                {/* <h2 className="section-title">Skills List</h2> */}
+            <section className="content-section profile-container margin-top-80">
                 <table className="table table-bordered">
                     <thead>
                         <tr>
@@ -172,8 +170,7 @@ function AddSkillForm() {
                                 <td>{skill.id}</td>
                                 <td>{skill.skillsName}</td>
                                 <td>
-                                    <Delete onClick={() => handleDeleteSkill(skill.id)} 
-                                    style={{ cursor: 'pointer' }}/>
+                                    <Delete onClick={() => handleDeleteSkill(skill.id)} style={{ cursor: 'pointer' }} />
                                 </td>
                             </tr>
                         ))}

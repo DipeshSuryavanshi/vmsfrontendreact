@@ -16,7 +16,7 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: '#F8F9FA', // Light background color
-  border: '2px solid #3498db', // Border color
+  border: '2px solid #3498db', // Border color 
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Box shadow
   borderRadius: '8px', // Border radius for rounded corners
   padding: '20px', // Padding
@@ -39,23 +39,44 @@ function VendorList() {
 
   const deleteVendorDate = async (id) => {
     try {
-        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-
-        const res = await axios.delete(`${API_URL}vendor/delete/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${token}` // Include the token in the Authorization header
-            }
+        // Ask for confirmation before proceeding with deletion
+        const confirmDelete = await Swal.fire({
+            icon: 'warning',
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this vendor?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
         });
 
-        // Show success message using SweetAlert if the deletion is successful
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Vendor deleted successfully!',
-        });
+        if (confirmDelete.isConfirmed) {
+            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-        // Fetch updated vendor data after deletion
-        fetchVendorData();
+            const res = await axios.delete(`${API_URL}vendor/delete/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+                }
+            });
+
+            // Show success message using SweetAlert if the deletion is successful
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Vendor deleted successfully!',
+            });
+
+            // Fetch updated vendor data after deletion
+            fetchVendorData();
+        } else {
+            // User cancelled the deletion, show a message or take appropriate action
+            Swal.fire({
+                icon: 'info',
+                title: 'Cancelled',
+                text: 'Deletion cancelled by user.',
+            });
+        }
     } catch (err) {
         console.log(err);
 
@@ -67,6 +88,7 @@ function VendorList() {
         });
     }
 };
+
 
   const fetchVendorData = async () => {
     try {
@@ -135,7 +157,7 @@ function VendorList() {
   };
 
   const validateFormData = (data) => {
-    if (!data.vendorName || !data.companyName || !data.contactNo || !data.address || !data.email) {
+    if (!data.vendorName || !data.companyName || !data.contactNo) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error',
@@ -282,13 +304,20 @@ const deleteVendorDate = async (id) => {
                       Vendor Name
                     </label>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="vendorName"
-                      value={selectedVendor.vendorName}
-                      onChange={(e) => setSelectedVendor({ ...selectedVendor, vendorName: e.target.value })}
-                      required
-                    />
+  type="text"
+  className="form-control"
+  id="vendorName"
+  value={selectedVendor.vendorName}
+  onChange={(e) => {
+    const inputValue = e.target.value;
+    // Regex pattern to allow only letters and spaces
+    const regexPattern = /^[a-zA-Z\s]*$/;
+    if (regexPattern.test(inputValue)) {
+      setSelectedVendor({ ...selectedVendor, vendorName: inputValue });
+    }
+  }}
+/>
+
                   </div>
 
                   <div className="form-group align-left">
@@ -301,7 +330,7 @@ const deleteVendorDate = async (id) => {
                       id="companyName"
                       value={selectedVendor.companyName}
                       onChange={(e) => setSelectedVendor({ ...selectedVendor, companyName: e.target.value })}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group align-left">
@@ -313,11 +342,12 @@ const deleteVendorDate = async (id) => {
                       className="form-control"
                       id="contactNo"
                       value={selectedVendor.contactNo}
+                      maxLength={10} 
                       onChange={(e) => setSelectedVendor({ ...selectedVendor, contactNo: e.target.value })}
-                      required
+                    
                     />
                   </div>
-                  <div className="form-group align-left">
+                  {/* <div className="form-group align-left">
                     <label htmlFor="address" style={{ fontWeight: 'bold' }}>
                       Address
                     </label>
@@ -329,8 +359,8 @@ const deleteVendorDate = async (id) => {
                       onChange={(e) => setSelectedVendor({ ...selectedVendor, address: e.target.value })}
                       required
                     />
-                  </div>
-                  <div className="form-group align-left">
+                  </div> */}
+                  {/* <div className="form-group align-left">
                     <label htmlFor="email" style={{ fontWeight: 'bold' }}>
                       Email
                     </label>
@@ -342,7 +372,7 @@ const deleteVendorDate = async (id) => {
                       onChange={(e) => setSelectedVendor({ ...selectedVendor, email: e.target.value })}
                       required
                     />
-                  </div>
+                  </div> */}
                   <button type="button" onClick={handleSaveChanges} className="btn btn-primary">
                     Save Changes
                   </button>
