@@ -41,6 +41,7 @@ function AddSkillForm() {
         fetch(`${API_URL}skill/getAllSkills`, {
             headers: {
                 'Authorization': `Bearer ${token}`
+                
             }
         })
         .then(response => response.json())

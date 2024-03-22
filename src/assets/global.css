@@ -647,7 +647,7 @@
     /* scrollbar-color: #aab7cf transparent; */
     
     box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
-    background-color: #fff;
+    background-color: #3d3939;
   }
   
   @media (max-width: 1199px) {
@@ -1294,15 +1294,15 @@
 
 .list-item {
     cursor: pointer;
-    color: #4154f1;
+    color: #fff;
 }
 .list-item-main{
     font-size: 15px;
     font-weight: 600;
-    color: #4154f1;
+    color: #fff;
 }
 .expand-icon {
-    color: #4154f1;
+    color: #fff;
 }
 .content-section {     width: calc(100vw - 300px);
   margin-left: auto;}

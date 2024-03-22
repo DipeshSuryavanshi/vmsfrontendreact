@@ -5,6 +5,8 @@ import { Delete, Edit } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import { Box, Modal, Stack } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
+import Select from 'react-select';
+
 const API_URL = process.env.REACT_APP_API_URL;
 const style = {
     position: 'absolute',
@@ -26,15 +28,27 @@ function CandidateList() {
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [itemsPerPage, setItemsPerPage] = useState(2);
+    const [selectedSkills, setSelectedSkills] = useState([]);
+    const [skillOptions, setSkillOptions] = useState([]);
 
-    useEffect(() => {
-        fetchCandidateData();
-    }, []);
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+    // const [candidates, setCandidates] = useState([]);
+    // const [selectedCandidate, setSelectedCandidate] = useState(null);
+    // const [open, setOpen] = useState(false);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [itemsPerPage, setItemsPerPage] = useState(6);
+     
+    const fetchSkillOptions = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${API_URL}skill/getAllSkills`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setSkillOptions(res?.data || []);
+        } catch (err) {
+            console.log(err);
+        }
+    };
     const fetchCandidateData = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -48,6 +62,24 @@ function CandidateList() {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        // fetchSkillOptions();
+        fetchCandidateData();
+       
+    }, []);
+    useEffect(() => {
+        fetchSkillOptions();
+        // fetchCandidateData();
+       
+    }, []);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+   
+
+   
     
     // Validation function for the form fields
     const validateFormData = (data) => {
@@ -110,36 +142,78 @@ function CandidateList() {
         return true;
     };
 
-    const deleteCandidateData = async (id) => {
-        try {
-            const token = localStorage.getItem('token');
-            const res = await axios.delete(`${API_URL}candidate/delete/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+    // const deleteCandidateData = async (id) => {
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         const res = await axios.delete(`${API_URL}candidate/delete/${id}`, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         });
 
-            // Show success message using SweetAlert if the deletion is successful
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Candidate deleted successfully!',
-            });
+    //         // Show success message using SweetAlert if the deletion is successful
+    //         Swal.fire({
+    //             icon: 'success',
+    //             title: 'Success',
+    //             text: 'Candidate deleted successfully!',
+    //         });
 
-            // Fetch updated candidate data after deletion
-            fetchCandidateData();
-        } catch (err) {
-            console.log(err);
+    //         // Fetch updated candidate data after deletion
+    //         fetchCandidateData();
+    //     } catch (err) {
+    //         console.log(err);
 
-            // Show error message using SweetAlert if deletion fails
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to delete candidate. Please try again later.',
-            });
-        }
-    };
-
+    //         // Show error message using SweetAlert if deletion fails
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error',
+    //             text: 'Failed to delete candidate. Please try again later.',
+    //         });
+    //     }
+    // };
+    const deleteCandidateData = async (id)=> {
+           try {
+               // Show confirmation dialog using SweetAlert
+               const confirmation = await Swal.fire({
+                   icon: 'warning',
+                   title: 'Are you sure?',
+                   text: 'You are about to delete this candidate. This action cannot be undone.',
+                   showCancelButton: true,
+                   confirmButtonColor: '#3085d6',
+                   cancelButtonColor: '#d33',
+                   confirmButtonText: 'Yes, delete it!'
+               });
+       
+               // Proceed with deletion if user confirms
+               if (confirmation.isConfirmed) {
+                   const token = localStorage.getItem('token');
+                   const res = await axios.delete(`${API_URL}candidate/delete/${id}`, {
+                       headers: {
+                           'Authorization': `Bearer ${token}`
+                       }
+                   });
+       
+                   // Show success message using SweetAlert if the deletion is successful
+                   Swal.fire({
+                       icon: 'success',
+                       title: 'Success',
+                       text: 'Candidate deleted successfully!',
+                   });
+       
+                   // Fetch updated candidate data after deletion
+                   fetchCandidateData();
+               }
+           } catch (err) {
+               console.log(err);
+       
+               // Show error message using SweetAlert if deletion fails
+               Swal.fire({
+                   icon: 'error',
+                   title: 'Error',
+                   text: 'Failed to delete candidate. Please try again later.',
+               });
+           }
+       };
 
     const handleEdit = async (id) => {
         try {
@@ -150,39 +224,57 @@ function CandidateList() {
                 }
             });
             setSelectedCandidate(res?.data || null);
+             // Set selected skills for the candidate
+             setSelectedSkills(res?.data?.skills.map(skill => ({ value: skill, label: skill })) || []);
             handleOpen();
         } catch (err) {
             console.log(err);
         }
     };
-
     const handleSaveChanges = async () => {
         try {
             if (selectedCandidate) {
                 const { id, ...data } = selectedCandidate;
-                
+                // Update the data object with the selected skills
+                data.skills = selectedSkills.map(skill => skill.label);
+    
                 // Validate form data
                 if (!validateFormData(data)) {
                     return;
                 }
-
+    
                 const token = localStorage.getItem('token');
-                const res = await axios.put(`${API_URL}candidate/updateCandidate/${id}`, data,
-                    {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
+                // Check if it's a new candidate or an existing one
+                if (id) {
+                    // Update existing candidate
+                    const res = await axios.put(`${API_URL}candidate/updateCandidate/${id}`, data,
+                        {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                } else {
+                    // Add new candidate
+                    const res = await axios.post(`${API_URL}candidate/addCandidate`, data,
+                        {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                }
+                // Fetch updated candidate data after adding or updating
                 fetchCandidateData();
+                // Reset current page to 1 to display the first page
+                setCurrentPage(1);
                 handleClose();
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Candidate updated successfully!',
+                    text: id ? 'Candidate updated successfully!' : 'Candidate added successfully!',
                 });
             }
         } catch (err) {
             console.log(err);
         }
     };
+    
+    
 
     // Change page
     const handlePageChange = (event, value) => {
@@ -286,6 +378,16 @@ function CandidateList() {
                                         />
                                     </div>
                                     <div className="form-group align-left">
+                                        <label htmlFor="skills" style={{ fontWeight: 'bold' }}>Skills</label>
+                                        <Select
+                                            id="skills"
+                                            options={skillOptions.map(skill => ({ value: skill.id, label: skill.skillsName }))} // Assuming you have an array of skill options
+                                            value={selectedSkills}
+                                            onChange={setSelectedSkills}
+                                            isMulti
+                                        />
+                                    </div>
+                                    <div className="form-group align-left">
                                         <label htmlFor="address" style={{ fontWeight: 'bold' }}>Address</label>
                                         <input
                                             type="text"
@@ -315,6 +417,7 @@ function CandidateList() {
                                             onChange={(e) => setSelectedCandidate({ ...selectedCandidate, dateOfBirth: e.target.value })}
                                         />
                                     </div>
+                                    
                                     
                                     <button type="button" onClick={handleSaveChanges} className="btn btn-primary">Save Changes</button>
                                 </form>

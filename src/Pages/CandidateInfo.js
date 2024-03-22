@@ -41,14 +41,49 @@ function CandidateInfo() {
     secondarySchoolName: "",
     secondarySchoolPassingYear: "",
     secondarySchoolPercentage: "",
+  })
+  const [mandatoryFieldsCompleted, setMandatoryFieldsCompleted] = useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+    dateOfBirth: false,
+    contactNo: false,
+    address: false,
+    aadharNumber: false,
+    totalExperience: false,
+    skills: false
   });
+
+
+  
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("personal");
   const [showPostGraduation, setShowPostGraduation] = useState(false);
-
+  const [nextButtonClicked, setNextButtonClicked] = useState(false);
   const [allSkills, setAllSkills] = useState([]);
   const [token, setToken] = useState("");
+  const [educationTabActive, setEducationTabActive] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "personal") {
+      // Disable the Education Profile tab when switching back to Personal Detail tab
+      setEducationTabActive(false);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    // Enable/disable "Next" button and "Education Profile" tab based on completion status
+    const nextBtn = document.getElementById("nextBtn");
+    const educationTab = document.getElementById("educationTab");
+    if (nextBtn && educationTab) {
+      const allMandatoryFieldsCompleted = Object.values(
+        mandatoryFieldsCompleted
+      ).every((field) => field);
+      nextBtn.disabled = !allMandatoryFieldsCompleted || nextButtonClicked;
+      educationTab.disabled = !educationTabActive;
+    }
+  }, [mandatoryFieldsCompleted, nextButtonClicked, educationTabActive]);
   useEffect(() => {
     // Fetch authorization token from localStorage
     const storedToken = localStorage.getItem("token");
@@ -77,75 +112,108 @@ function CandidateInfo() {
 
     fetchSkills();
   }, []);
-  
+
+ 
+
   const handleChange = (e) => {
     if (e.target) {
+      // Standard input change event
       const { name, value } = e.target;
-      let newValue = value;
-      switch (name) {
-        case "graduationInstituteName":
-        case "postgraduationInstituteName":
-        case "highSchoolName":
-        case "secondarySchoolName":
-          newValue = value.replace(/[^a-zA-Z\s]/g, "");
-          break;
-        case "graduationName":
-        case "postgraduationName":
-          newValue = value.replace(/[^a-zA-Z0-9]/g, "");
-          break;
-        case "graduationPassingYear":
-        case "postgraduationPassingYear":
-        case "highSchoolPassingYear":
-        case "secondarySchoolPassingYear":
-          newValue = value.replace(/[^\d]/g, "");
-          break;
-        case "graduationPercentage":
-        case "postgraduationPercentage":
-        case "highSchoolPercentage":
-        case "secondarySchoolPercentage":
-          newValue = value.replace(/[^0-9.]/g, "");
-          break;
-        case "secondarySchoolName":
-          newValue = value.replace(/[0-9.]/g, "");
-          break;
-        case "firstName":
-        case "lastName":
-        case "motherName":
-        case "fatherName":
-          newValue = value.replace(/[^a-zA-Z]/g, "");
-          break;
-        case "whatsappNumber":
-        case "contactNo":
-          newValue = value.replace(/[^\d]/g, "").slice(0, 10);
-          break;
-        case "aadharNumber":
-          newValue = value.replace(/[^\d]/g, "").slice(0, 12);
-          break;
-        case "panNumber":
-          newValue = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 10);
-          break;
-        default:
-          break;
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+      if (mandatoryFieldsCompleted.hasOwnProperty(name)) {
+        setMandatoryFieldsCompleted(prevState => ({
+          ...prevState,
+          [name]: !!value
+        }));
       }
-
-      setFormData({
-        ...formData,
-        [name]: newValue,
-      });
-    } else { // If the event target is from the Select component
+    } else {
+      // react-select change event
       const selectedOptions = e;
       const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-      setFormData({
-        ...formData,
+      setFormData(prevState => ({
+        ...prevState,
         skills: selectedValues,
-      });
+      }));
+      setMandatoryFieldsCompleted(prevState => ({
+        ...prevState,
+        skills: selectedValues.length > 0
+      }));
     }
   };
+  
+  
+  // const handleChange = (e) => {
+  //   if (e.target) {
+  //     const { name, value } = e.target;
+  //     let newValue = value;
+  //     switch (name) {
+  //       case "graduationInstituteName":
+  //       case "postgraduationInstituteName":
+  //       case "highSchoolName":
+  //       case "secondarySchoolName":
+  //         newValue = value.replace(/[^a-zA-Z\s]/g, "");
+  //         break;
+  //       case "graduationName":
+  //       case "postgraduationName":
+  //         newValue = value.replace(/[^a-zA-Z0-9]/g, "");
+  //         break;
+  //       case "graduationPassingYear":
+  //       case "postgraduationPassingYear":
+  //       case "highSchoolPassingYear":
+  //       case "secondarySchoolPassingYear":
+  //         newValue = value.replace(/[^\d]/g, "");
+  //         break;
+  //       case "graduationPercentage":
+  //       case "postgraduationPercentage":
+  //       case "highSchoolPercentage":
+  //       case "secondarySchoolPercentage":
+  //         newValue = value.replace(/[^0-9.]/g, "");
+  //         break;
+  //       case "secondarySchoolName":
+  //         newValue = value.replace(/[0-9.]/g, "");
+  //         break;
+  //       case "firstName":
+  //       case "lastName":
+  //       case "motherName":
+  //       case "fatherName":
+  //         newValue = value.replace(/[^a-zA-Z]/g, "");
+  //         break;
+  //       case "whatsappNumber":
+  //       case "contactNo":
+  //         newValue = value.replace(/[^\d]/g, "").slice(0, 10);
+  //         break;
+  //       case "aadharNumber":
+  //         newValue = value.replace(/[^\d]/g, "").slice(0, 12);
+  //         break;
+  //       case "panNumber":
+  //         newValue = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 10);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+
+  //     setFormData({
+  //       ...formData,
+  //       [name]: newValue,
+  //     });
+  //   } else { // If the event target is from the Select component
+  //     const selectedOptions = e;
+  //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+  //     setFormData({
+  //       ...formData,
+  //       skills: selectedValues,
+  //     });
+  //   }
+  // };
   
   
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setNextButtonClicked(false);
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${API_URL}candidate/register`, {
@@ -187,6 +255,12 @@ function CandidateInfo() {
       });
     }
   };
+  const handleNextButtonClick = () => {
+    // Set the state to indicate that "Next" button is clicked
+    setNextButtonClicked(true);
+    setActiveTab("educational");
+    setEducationTabActive(true);
+  };
 
   return (
     <>
@@ -207,6 +281,7 @@ function CandidateInfo() {
                 }`}
                 
                 onClick={() => setActiveTab("personal")}
+               
               >
                 Personal Details
               </button>
@@ -217,6 +292,7 @@ function CandidateInfo() {
                   activeTab === "educational" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("educational")}
+                disabled={!nextButtonClicked}
               >
                 Educational Details
               </button>
@@ -234,7 +310,7 @@ function CandidateInfo() {
                   
                 <div className="col">
                   <label>
-                    First Name:
+                      First Name<span style={{ color: 'red' }}>*</span>:
                     <input
                       type="text"
                       name="firstName"
@@ -248,7 +324,7 @@ function CandidateInfo() {
                 </div>
                 <div className="col">
                   <label >
-                    Last Name:
+                  Last Name<span style={{ color: 'red' }}>*</span>:
                     <input
                       type="text"
                       name="lastName"
@@ -349,7 +425,7 @@ function CandidateInfo() {
                   <div className="row mb-3">
                   <div className="col">
                       <label>
-                        Total Experience:
+                      Total Experience<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="number"
                           name="totalExperience"
@@ -363,7 +439,7 @@ function CandidateInfo() {
                     </div>
                     <div className="col">
                       <label >
-                        Contact Number:
+                      Contact Number<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="number  "
                           name="contactNo"
@@ -371,6 +447,7 @@ function CandidateInfo() {
                           onChange={handleChange}
                           className="form-control"
                           placeholder="Contact Number"
+                          required
                         />
                       </label>
                     </div>
@@ -378,7 +455,7 @@ function CandidateInfo() {
                   <div className="row mb-3">
                     <div className="col">
                       <label>
-                        Address:
+                      Address<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="text"
                           name="address"
@@ -386,12 +463,13 @@ function CandidateInfo() {
                           onChange={handleChange}
                           className="form-control"
                           placeholder="Address"
+                          required
                         />
                       </label>
                     </div>
                     <div className="col">
                       <label>
-                        Email:
+                      Email<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="email"
                           name="email"
@@ -407,7 +485,7 @@ function CandidateInfo() {
                   <div className="row mb-3">
                     <div className="col">
                       <label>
-                        Date of Birth:
+                      Date of Birth<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="date"
                           name="dateOfBirth"
@@ -415,12 +493,13 @@ function CandidateInfo() {
                           onChange={handleChange}
                           className="form-control"
                           placeholder="Date of Birth"
+                          required
                         />
                       </label>
                     </div>
                     <div className="col">
                       <label>
-                        Aadhar Number:
+                        Aadhar Number<span style={{ color: 'red' }}>*</span>:
                         <input
                           type="number"
                           name="aadharNumber"
@@ -428,6 +507,7 @@ function CandidateInfo() {
                           onChange={handleChange}
                           className="form-control"
                           placeholder="Aadhar Number"
+                          required
                         />
                       </label>
                     </div>
@@ -447,7 +527,7 @@ function CandidateInfo() {
                       </label>
                     </div>
                     <div className="col">
-        <label>Skills:</label>
+        <label> Skills<span style={{ color: 'red' }}>*</span>:</label>
         <Select
   isMulti
   name="skills"
@@ -478,7 +558,7 @@ function CandidateInfo() {
       <div className="row mb-3">
         <div className="col-md-6">
           <label>
-            College Name:
+            College Name<span style={{ color: 'red' }}>*</span>:
             <input
               type="text"
               name="graduationInstituteName"
@@ -492,7 +572,7 @@ function CandidateInfo() {
         </div>
         <div className="col-md-6">
           <label>
-            Degree Name:
+            Degree Name<span style={{ color: 'red' }}>*</span>:
             <input
               type="text"
               name="graduationName"
@@ -507,7 +587,7 @@ function CandidateInfo() {
       <div className="row mb-3">
         <div className="col-md-6">
           <label>
-            Degree Percentage:
+            Degree Percentage<span style={{ color: 'red' }}>*</span>:
             <input
               type="number  "
               name="graduationPercentage"
@@ -521,7 +601,7 @@ function CandidateInfo() {
         </div>
         <div className="col-md-6">
           <label>
-            Stream:
+            Stream<span style={{ color: 'red' }}>*</span>:
             <input
               type="text"
               name="graduationStream"
@@ -537,7 +617,7 @@ function CandidateInfo() {
       <div className="row mb-3">
         <div className="col-md-6">
           <label>
-            Degree Passing Year:
+            Degree Passing Year<span style={{ color: 'red' }}>*</span>:
             <input
               type="number  "
               name="graduationPassingYear"
@@ -655,7 +735,7 @@ function CandidateInfo() {
       <div className="row mb-3">
         <div className="col-md-6">
           <label>
-            High School Name:
+            High School Name<span style={{ color: 'red' }}>*</span>:
             <input
               type="text"
               name="highSchoolName"
@@ -669,7 +749,7 @@ function CandidateInfo() {
         </div>
         <div className="col-md-6">
           <label>
-            High School Passing Year:
+            High School Passing Year<span style={{ color: 'red' }}>*</span>:
             <input
               type="number"
               name="highSchoolPassingYear"
@@ -685,7 +765,7 @@ function CandidateInfo() {
       <div className="row mb-3">
         <div className="col-md-6">
           <label>
-            High School Percentage:
+            High School Percentage<span style={{ color: 'red' }}>*</span>:
             <input
               type="number"
               name="highSchoolPercentage"
@@ -714,7 +794,7 @@ function CandidateInfo() {
               onChange={handleChange}
               className="form-control"
               placeholder="Secondary School Name"
-                        required
+                        
             />
           </label>
         </div>
@@ -728,7 +808,7 @@ function CandidateInfo() {
               onChange={handleChange}
               className="form-control"
               placeholder="Secondary School Passing Year"
-                        required
+                        
             />
           </label>
         </div>
@@ -744,7 +824,7 @@ function CandidateInfo() {
               onChange={handleChange}
               className="form-control"
               placeholder="Secondary School Percentage"
-                        required  
+                         
             />
           </label>
         </div>
@@ -759,7 +839,8 @@ function CandidateInfo() {
     <button
       type="button"
       className="btn btn-primary ms-auto"
-      onClick={() => setActiveTab("educational")}
+      onClick={handleNextButtonClick}
+      disabled={!Object.values(mandatoryFieldsCompleted).every(field => field)}
     >
       Next
     </button>
